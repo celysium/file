@@ -8,19 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $id
  * @property int $file_id
- * @property int $fillable_id
- * @property string $fillable_type
+ * @property int $fileable_id
+ * @property string $fileable_type
  * @property string $type
  * @property array $data
  */
-class Fillable extends Model
+class Fileable extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'file_id',
-        'fillable_id',
-        'fillable_type',
+        'fileable_id',
+        'fileable_type',
         'type',
         'data',
     ];
