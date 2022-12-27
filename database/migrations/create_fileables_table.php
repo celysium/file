@@ -12,14 +12,11 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('fillables', function (Blueprint $table) {
+        Schema::create('fileables', function (Blueprint $table) {
             $table->id();
             $table->foreignId('file_id')
-                ->constrained('files')
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate();
-            $table->integer('fillable_id');
-            $table->string('fillable_type');
+                ->constrained('files');
+            $table->morphs('fileable');
             $table->string('type')->nullable();
             $table->json('data')->nullable();
         });
@@ -32,6 +29,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('fillables');
+        Schema::dropIfExists('fileables');
     }
 };

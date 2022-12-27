@@ -13,4 +13,6 @@ trait HasFile
         /** @var Model $this */
         return $this->morphToMany(File::class, 'fillable');
     }
+
+    // TODO : morphmany -> mane class (__CLASS__) yek morph many daram , biyad record haro az jadval vasat bekhune
 }

@@ -16,4 +16,6 @@ class File extends Model
     protected $fillable = [
         'path'
     ];
+
+    // TODO : has many fileales
 }
