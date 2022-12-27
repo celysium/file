@@ -16,7 +16,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Celysium\\ACL\\ACLServiceProvider"
+                "Celysium\\File\\FileServiceProvider"
             ]
         }
     },
