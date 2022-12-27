@@ -16,11 +16,12 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('file_id')
                 ->constrained('files')
-                ->cascadeOnDelete();
-            $table->string('fillable_id');
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->integer('fillable_id');
             $table->string('fillable_type');
-            $table->string('type');
-            $table->json('data');
+            $table->string('type')->nullable();
+            $table->json('data')->nullable();
         });
     }
 
