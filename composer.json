@@ -1,0 +1,40 @@
+{
+    "name": "celysium/file",
+    "description": "File storing",
+    "keywords": [
+        "Laravel",
+        "File",
+        "Image"
+    ],
+    "license": "MIT",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Celysium\\File\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Celysium\\ACL\\ACLServiceProvider"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name" : "Nasser Hekmati",
+            "email" : "hekmati.nasser@gmail.com"
+        },
+        {
+            "name": "Ehsan Tavakoli",
+            "email": "ehsantavakoli1995@gmail.com"
+        }
+    ],
+    "require": {
+        "php" : "^8.0",
+        "laravel/framework" : "^9.0",
+        "celysium/responser": "dev-master"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
