@@ -1,6 +1,6 @@
 <?php
 
-namespace Celysium\ACL\Models;
+namespace Celysium\File\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

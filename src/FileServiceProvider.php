@@ -1,6 +1,6 @@
 <?php
 
-namespace Celysium\ACL;
+namespace Celysium\File;
 
 use Illuminate\Support\ServiceProvider;
 
