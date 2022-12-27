@@ -3,7 +3,9 @@
 namespace Celysium\File\Traits;
 
 use Celysium\File\Models\File;
+use Celysium\File\Models\Fileable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 trait HasFile
@@ -14,5 +16,9 @@ trait HasFile
         return $this->morphToMany(File::class, 'fileable');
     }
 
-    // TODO : morphmany -> mane class (__CLASS__) yek morph many daram , biyad record haro az jadval vasat bekhune
+    public function fileables(): MorphMany
+    {
+        /** @var Model $this */
+        return $this->morphMany(Fileable::class,' fileable');
+    }
 }

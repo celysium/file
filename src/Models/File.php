@@ -4,6 +4,7 @@ namespace Celysium\File\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -17,5 +18,8 @@ class File extends Model
         'path'
     ];
 
-    // TODO : has many fileales
+    public function fileables(): HasMany
+    {
+        return $this->hasMany(Fileable::class);
+    }
 }
