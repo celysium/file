@@ -1,6 +1,6 @@
 <?php
 
-namespace App\File\src\Requests;
+namespace Celysium\File\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -13,7 +13,7 @@ class CreateFileRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class CreateFileRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'image' => ['required', 'image', 'mimes:jpg,png,jpeg,gif,svg'],
+            'description' => ['string',' max:255']
         ];
     }
 }
