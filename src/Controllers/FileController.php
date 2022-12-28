@@ -2,9 +2,12 @@
 
 namespace Celysium\File\Controllers;
 
+use Celysium\File\Repositories\FileServiceInterface;
+use Celysium\File\Requests\CreateFileRequest;
+
 class FileController extends Controller
 {
-    public function __construct()
+    public function __construct(protected FileServiceInterface $fileService)
     {
     }
 
@@ -13,9 +16,11 @@ class FileController extends Controller
 
     }
 
-    public function create()
+    public function create(CreateFileRequest $request)
     {
+        $validatedData = $request->validated();
 
+        return $this->fileService->create($validatedData);
     }
 
     public function delete()
