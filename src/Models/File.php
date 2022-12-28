@@ -12,11 +12,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class File extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'path'
+        'path',
+        'description',
     ];
+
+    use HasFactory;
 
     public function fileables(): HasMany
     {
