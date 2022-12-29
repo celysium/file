@@ -2,14 +2,15 @@
 
 namespace Celysium\File\Repositories;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 interface FileServiceInterface
 {
-    public function list();
+    public function list(array $parameters): LengthAwarePaginator;
 
-    public function create(array $parameters): Model|Builder;
+    public function store(array $parameters): Model|Builder;
 
-    public function delete();
+    public function delete(array $parameters): bool;
 }
