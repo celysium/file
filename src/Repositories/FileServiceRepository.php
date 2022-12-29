@@ -34,18 +34,16 @@ class FileServiceRepository implements FileServiceInterface
 
     public function delete(array $parameters): bool
     {
-        $fileIds = File::query()
-            ->select('id')
-            ->where('path', $parameters)
-            ->get()
-            ->toArray();
-
         Fileable::query()
-            ->whereIn('file_id', $fileIds)
-            ->delete();
+            ->whereIn('file_id', function ($query) use ($parameters) {
+                $query->select('id')
+                    ->from('files')
+                    ->whereIn('path', $parameters)
+                    ->get();
+            })->delete();
 
         File::query()
-            ->whereIn('id', $fileIds)
+            ->whereIn('path', $fileIds)
             ->delete();
 
         return Storage::delete($parameters);
