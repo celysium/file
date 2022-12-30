@@ -2,6 +2,7 @@
 
 namespace Celysium\File\Models;
 
+use database\factories\FileFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,5 +24,10 @@ class File extends Model
     public function fileables(): HasMany
     {
         return $this->hasMany(Fileable::class);
+    }
+
+    protected static function newFactory()
+    {
+        return FileFactory::new();
     }
 }
