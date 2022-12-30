@@ -27,7 +27,7 @@ class FileController extends Controller
     {
         $file = $this->fileService->store($request->validated());
 
-        return Responser::created(new FileResource($createdFile));
+        return Responser::created(new FileResource($file));
     }
 
     public function delete(DeleteFileRequest $request): JsonResponse
