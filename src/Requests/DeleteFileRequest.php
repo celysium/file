@@ -14,8 +14,9 @@ class DeleteFileRequest extends FormRequest
     public function rules()
     {
         return [
-            'files' => ['required', 'array'], // TODO : give ids
-            'files.*' => ['string', 'max:255']
+            'files' => ['required', 'array'],
+            'files.*' => ['alpha_num', 'max:255'],
+            'from_storage' => ['boolean']
         ];
     }
 }

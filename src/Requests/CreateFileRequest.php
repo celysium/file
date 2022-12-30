@@ -14,7 +14,7 @@ class CreateFileRequest extends FormRequest
     public function rules()
     {
         return [
-            'image' => ['required', 'image', 'mimes:jpg,png,jpeg,gif,svg'], // TODO : file , delete images and use files
+            'file' => ['required', 'file'],
             'description' => ['string',' max:255']
         ];
     }
