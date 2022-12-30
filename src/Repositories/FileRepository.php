@@ -6,48 +6,67 @@ use Celysium\File\Models\File;
 use Celysium\File\Models\Fileable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 class FileRepository implements FileRepositoryInterface
 {
 
-    public function list(array $parameters): LengthAwarePaginator // TODO : name /see Nasser code/index() ,   callback function , ->when()
+    public function list(array $parameters): LengthAwarePaginator|Collection
     {
-        return File::query()
-            ->paginate($parameters['per_page'] ?? 20);
+        $query = File::query();
+
+        $query = $this->applyFilters($query, $parameters);
+
+        if (isset($parameters['paginate']) && !empty($parameters['paginate'])) {
+            return $query->paginate($parameters['paginate']);
+        } else {
+            return $query->get();
+        }
     }
 
     public function store(array $parameters): Model|Builder
     {
-        /** @var UploadedFile $image */
-        $image = $parameters['image']; // TODO : file
+        $parameters['path'] = Storage::putFile(now()->format('Y/m/d'), $parameters['file'], 'public');
 
-        $path = Storage::putFile('images', $image, 'public'); // TODO : instead of images now()->format('Y/m/d') skype
-        // $parameters['path'] instead of $path
         return File::query()
-            ->create(array_merge($parameters, [
-                'path' => $path
-            ]));
+            ->create($parameters);
     }
 
     public function delete(array $parameters): bool
-    {//TODO : customer flag , to delete file in storage or not
-        // TODO : update cache
-        // id will be gotten instead of paths
+    {
         Fileable::query()
             ->whereIn('file_id', function ($query) use ($parameters) {
                 $query->select('id')
                     ->from('files')
-                    ->whereIn('path', $parameters)
+                    ->whereIn('id', $parameters['files'])
                     ->get();
             })->delete();
 
         File::query()
-            ->whereIn('path', $fileIds)
+            ->whereIn('id', $parameters['files'])
             ->delete();
 
-        return Storage::delete($parameters);
+        // TODO : Fire a job to update the cache
+
+        if (isset($parameters['from_storage'])) {
+            Storage::delete($parameters);
+        }
+
+        return true;
+    }
+
+    protected function applyFilters(Builder $query, array $filters): Builder
+    {
+        if (isset($filters['id'])) {
+            $query->whereIn('id', $filters['id']);
+        }
+
+        if (isset($filters['path'])) {
+            $query->whereIn('path', $filters['path']);
+        }
+
+        return $query;
     }
 }
