@@ -10,7 +10,8 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Celysium\\File\\": "src/"
+            "Celysium\\File\\": "src/",
+            "Database\\Factories\\" : "database/factories/"1
         }
     },
     "extra": {
