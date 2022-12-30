@@ -7,16 +7,6 @@ use Illuminate\Foundation\Http\FormRequest;
 class CreateFileRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, mixed>
@@ -24,7 +14,7 @@ class CreateFileRequest extends FormRequest
     public function rules()
     {
         return [
-            'image' => ['required', 'image', 'mimes:jpg,png,jpeg,gif,svg'],
+            'image' => ['required', 'image', 'mimes:jpg,png,jpeg,gif,svg'], // TODO : file , delete images and use files
             'description' => ['string',' max:255']
         ];
     }

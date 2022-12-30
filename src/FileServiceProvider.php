@@ -2,15 +2,14 @@
 
 namespace Celysium\File;
 
-use Celysium\File\Repositories\FileServiceInterface;
-use Celysium\File\Repositories\FileServiceRepository;
+use Celysium\File\Repositories\FileRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class FileServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->bind(FileServiceInterface::class, FileServiceRepository::class);
+        $this->app->bind(FileRepositoryInterface::class, FileRep);
     }
 
     public function boot()

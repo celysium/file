@@ -2,7 +2,7 @@
 
 namespace Celysium\File\Controllers;
 
-use Celysium\File\Repositories\FileServiceInterface;
+use Celysium\File\Repositories\FileRepositoryInterface;
 use Celysium\File\Requests\CreateFileRequest;
 use Celysium\File\Requests\DeleteFileRequest;
 use Celysium\File\Resources\FileResource;
@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class FileController extends Controller
 {
-    public function __construct(protected FileServiceInterface $fileService)
+    public function __construct(protected FileRepositoryInterface $fileService)
     {
     }
 
@@ -25,7 +25,7 @@ class FileController extends Controller
 
     public function store(CreateFileRequest $request): JsonResponse
     {
-        $createdFile = $this->fileService->store($request->validated());
+        $file = $this->fileService->store($request->validated());
 
         return Responser::created(new FileResource($createdFile));
     }
