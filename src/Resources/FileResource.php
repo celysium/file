@@ -2,7 +2,11 @@
 
 namespace Celysium\File\Resources;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
+use JsonSerializable;
 
 /**
  * @property int $id
@@ -14,16 +18,14 @@ class FileResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param  Request  $request
+     * @return array|Arrayable|JsonSerializable
      */
     public function toArray($request)
     {
         return [
             'id' => $this->id,
-            'path' => $this->path,// TODO : pass url too , get url concat image path => storage::url() laravel method
-            // TODO : remove path
-            // TODO : app_URL ro bekhune
+            'url' => url(Storage::path($this->path)),
             'description' => $this->description
         ];
     }
