@@ -2,71 +2,75 @@
 
 namespace Celysium\File\Repositories;
 
+use Celysium\BaseStructure\Repository\BaseRepository;
 use Celysium\File\Models\File;
 use Celysium\File\Models\Fileable;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
-class FileRepository implements FileRepositoryInterface
+class FileRepository extends BaseRepository implements FileRepositoryInterface
 {
-
-    public function list(array $parameters): LengthAwarePaginator|Collection
+    public function __construct(protected File $file)
     {
-        $query = File::query();
-
-        $query = $this->applyFilters($query, $parameters);
-
-        if (isset($parameters['paginate']) && !empty($parameters['paginate'])) {
-            return $query->paginate($parameters['paginate']);
-        } else {
-            return $query->get();
-        }
+        parent::__construct($file);
     }
 
-    public function store(array $parameters): Model|Builder
+    /**
+     * @throws ValidationException
+     */
+    public function store(array $parameters): Model
     {
-        $parameters['path'] = Storage::putFile(now()->format('Y/m/d'), $parameters['file'], 'public');
+        $parameters['path'] = Storage::putFile(
+            now()->format('Y/m/d'),
+            $parameters['file'], 'public'
+        );
 
-        return File::query()
-            ->create($parameters);
+        if (! $parameters['file_path']) {
+            throw ValidationException::withMessages(['storage' => [__('file::file.Storage is full')]]);
+        }
+
+        return parent::store($parameters);
     }
 
     public function delete(array $parameters): bool
     {
-        Fileable::query()
-            ->whereIn('file_id', function ($query) use ($parameters) {
-                $query->select('id')
-                    ->from('files')
-                    ->whereIn('id', $parameters['files'])
-                    ->get();
-            })->delete();
+        $fileQuery = File::query();
 
-        File::query()
+        $files = $fileQuery
             ->whereIn('id', $parameters['files'])
-            ->delete();
+            ->get();
+
+        DB::transaction(function () use ($fileQuery, $parameters) {
+
+            Fileable::query()
+                ->whereIn('file_id', $parameters['files'])
+                ->delete();
+
+            $fileQuery
+                ->whereIn('id', $parameters['files'])
+                ->delete();
+        });
 
         // TODO : Fire a job to update the cache
 
-        if (isset($parameters['from_storage'])) {
-            Storage::delete($parameters);
+        if (isset($parameters['is_force_delete'])) {
+            Storage::delete(
+                $files->pluck('path')->toArray()
+            );
         }
 
         return true;
     }
 
-    protected function applyFilters(Builder $query, array $filters): Builder
+    public function applyFilters(Builder $query = null, array $parameters = []): Builder
     {
-        if (isset($filters['id'])) {
-            $query->whereIn('id', $filters['id']);
+        if (isset($parameters['path'])) {
+            $query->where('path', $parameters['path']);
         }
 
-        if (isset($filters['path'])) {
-            $query->whereIn('path', $filters['path']);
-        }
-
-        return $query;
+        return parent::applyFilters($query, $parameters);
     }
 }
