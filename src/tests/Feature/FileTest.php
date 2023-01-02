@@ -12,7 +12,7 @@ class FileTest extends TestCase
 
     public function testStoreCreationSuccessful()
     {
-        $description = 'My test image';
+        $description = fake()->sentence();
 
         $response = $this->postJson(route('file.store'), [
             'file' => UploadedFile::fake()->image('test.jpg'),
