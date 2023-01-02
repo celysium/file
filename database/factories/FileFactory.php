@@ -14,7 +14,7 @@ class FileFactory extends Factory
     public function definition()
     {
         return [
-            'path' => $this->faker->sha256(),
+            'path' => $this->faker->filePath(),
         ];
     }
 }
