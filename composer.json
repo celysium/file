@@ -34,7 +34,8 @@
     "require": {
         "php" : "^8.0",
         "laravel/framework" : "^9.0",
-        "celysium/responser": "dev-master"
+        "celysium/responser": "dev-master",
+        "celysium/base-structure": "dev-master"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
