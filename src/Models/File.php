@@ -26,7 +26,7 @@ class File extends Model
         return $this->hasMany(Fileable::class);
     }
 
-    protected static function newFactory()
+    protected static function newFactory(): FileFactory
     {
         return FileFactory::new();
     }
