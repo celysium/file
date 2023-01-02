@@ -25,7 +25,7 @@ class FileResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'url' => url(Storage::path($this->path)),
+            'url' => Storage::url($this->path),
             'description' => $this->description
         ];
     }
