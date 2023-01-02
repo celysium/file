@@ -15,8 +15,8 @@ class DeleteFileRequest extends FormRequest
     {
         return [
             'files' => ['required', 'array'],
-            'files.*' => ['alpha_num', 'max:255'],
-            'from_storage' => ['boolean']
+            'files.*' => ['integer'],
+            'is_force_delete' => ['boolean']
         ];
     }
 }
