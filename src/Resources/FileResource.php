@@ -11,8 +11,8 @@ use JsonSerializable;
 /**
  * @property int $id
  * @property string $path
- * @property string $type
  * @property string $description
+ * @property string $extension
  */
 class FileResource extends JsonResource
 {
@@ -28,7 +28,7 @@ class FileResource extends JsonResource
             'id' => $this->id,
             'url' => Storage::url($this->path),
             'description' => $this->description,
-            'type' => $this->type,
+            'extension' => $this->extension,
         ];
     }
 }
