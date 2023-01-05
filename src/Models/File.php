@@ -19,6 +19,7 @@ class File extends Model
     protected $fillable = [
         'path',
         'description',
+        'extension',
     ];
 
     public function fileables(): HasMany
@@ -28,6 +29,6 @@ class File extends Model
 
     protected static function newFactory(): FileFactory
     {
-        return FileFactory::new();
+        return static();
     }
 }

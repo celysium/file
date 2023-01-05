@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->string('path');
             $table->string('description')->nullable();
+            $table->string('extension');
         });
     }
 
