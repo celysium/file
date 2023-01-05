@@ -2,6 +2,7 @@
 
 namespace Celysium\File\Controllers;
 
+use App\File\src\Requests\AttachRequest;
 use Celysium\BaseStructure\Controller\Controller;
 use Celysium\File\Repositories\FileRepositoryInterface;
 use Celysium\File\Requests\CreateFileRequest;
@@ -31,10 +32,22 @@ class FileController extends Controller
         return Responser::created(new FileResource($file));
     }
 
-    public function delete(DeleteFileRequest $request): JsonResponse
+    public function attach(AttachRequest $request)
     {
-        return Responser::deleted(
-            $this->fileService->delete($request->validated())
+        return Responser::success(
+            $this->fileService->attach($request->validated())
         );
+    }
+
+    public function detach()
+    {
+
+    }
+
+    public function destroy(DeleteFileRequest $request): JsonResponse
+    {
+        $this->fileService->delete($request->validated());
+
+        return Responser::deleted();
     }
 }
