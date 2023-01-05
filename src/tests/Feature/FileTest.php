@@ -15,20 +15,16 @@ class FileTest extends TestCase
 
     public function testStoreCreationSuccessful()
     {
-        $description = fake()->sentence();
+        $fileDataCreation = File::factory()->formData()->create();
 
-        $response = $this->postJson(route('file.store'), [
-            'file' => UploadedFile::fake()->image('test.jpg'),
-            'description' => $description
-        ]);
+        $response = $this->postJson(route('file.store'), $fileDataCreation);
 
         $response->assertSuccessful()
-            ->assertJsonStructure([]);
-
-        $this->assertDatabaseHas('files', [
-            'path' => '',
-            'description' => $description
-        ]);
+            ->assertJson(fn(AssertableJson $json) => $json
+                ->hasAll('messages', 'data', 'meta')
+                ->has('data.id')
+                ->where('data.description', $fileDataCreation['description'])
+            );
     }
 
     public function testDeleteFileWithoutForceDelete()
@@ -71,6 +67,9 @@ class FileTest extends TestCase
             ->assertJsonCount(10, 'data')
             ->assertJson(fn(AssertableJson $json) => $json
                 ->hasAll('messages', 'data', 'meta')
+                ->has('data.id')
+                ->where('path', $files->first()->path)
+                ->where('description', $files->first()->description)
             );
     }
 }
