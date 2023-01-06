@@ -61,16 +61,19 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
                 ->delete();
 
             $result = Storage::delete($paths);
+
+            if ($result) {
+                DB::commit();
+                //TODO : fire job to update cache
+                return true;
+            } else {
+                DB::rollBack();
+                return false;
+            }
         }
 
-        if ($result) {
-            DB::commit();
-            //TODO : fire job to update cache
-            return true;
-        } else {
-            DB::rollBack();
-            return false;
-        }
+        DB::commit();
+        return true;
     }
 
     public function applyFilters(Builder $query = null, array $parameters = []): Builder
