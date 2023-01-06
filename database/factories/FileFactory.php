@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use Celysium\File\Models\File;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Http\UploadedFile;
 
 
 class FileFactory extends Factory
@@ -17,18 +16,7 @@ class FileFactory extends Factory
         return [
             'path' => $this->faker->filePath(),
             'description' => $this->faker->sentence(),
-            'extension' => $this->faker->fileExtension(),
+            'mime_type' => $this->faker->mimeType(),
         ];
-    }
-
-    public function formData(): FileFactory
-    {
-        return $this->state(function (array $attributes) {
-            return [
-              'file' => UploadedFile::fake()->image(
-                  $this->faker->file() . '.' . $this->faker->fileExtension()
-              )
-            ];
-        });
     }
 }

@@ -23,7 +23,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
      */
     public function store(array $parameters): Model
     {
-        $parameters['extension'] = $parameters['file']->extension();
+        $parameters['mime_type'] = $parameters['file']->extension();
 
         $parameters['path'] = Storage::putFile(
             now()->format('Y/m/d'),
@@ -33,7 +33,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
 
         if (!$parameters['path']) {
             throw ValidationException::withMessages([
-                'file' => [__('messages::messages.not_enough_space')]
+                'file' => [__('file::message.not_enough_space')]
             ]);
         }
 
@@ -44,50 +44,33 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
 
     public function delete(array $parameters): bool
     {
-        $filesPath = File::query()
+        DB::beginTransaction();
+
+        $paths = File::query()
             ->whereIn('id', $parameters['files'])
             ->get(['path'])
             ->toArray();
-
-        DB::beginTransaction();
 
         Fileable::query()
             ->whereIn('file_id', $parameters['files'])
             ->delete();
 
-        if (
-            isset($parameters['is_force_delete'])
-            && $parameters['is_force_delete']
-        ) {
+        if (!empty($parameters['is_force_delete'])) {
             File::query()
                 ->whereIn('id', $parameters['files'])
                 ->delete();
 
-            Storage::delete($filesPath);
+            $result = Storage::delete($paths);
         }
 
-        DB::commit();
-
-        // TODO : Fire a job to update the cache
-
-        return true;
-    }
-
-    public function attach(array $parameters): bool
-    {
-        return Fileable::query()
-            ->insert(
-                $this->makeDataToAttach($parameters)
-            );
-    }
-
-    public function detach(array $parameters): bool
-    {
-        return Fileable::query()
-            ->where('file_id', $parameters['file_id'])
-            ->where('fileable_type', $parameters['model'])
-            ->whereIn('fileable_id', $parameters['model_ids'])
-            ->delete();
+        if ($result) {
+            DB::commit();
+            //TODO : fire job to update cache
+            return true;
+        } else {
+            DB::rollBack();
+            return false;
+        }
     }
 
     public function applyFilters(Builder $query = null, array $parameters = []): Builder
@@ -97,16 +80,5 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
         }
 
         return parent::applyFilters($query, $parameters);
-    }
-
-    protected function makeDataToAttach(array $parameters): array
-    {
-        return collect($parameters['model_ids'])->map(function ($modelId) use ($parameters) {
-            return [
-                'file_id' => $parameters['file_id'],
-                'fileable_type' => $parameters['model'],
-                'fileable_id' => $modelId,
-            ];
-        })->toArray();
     }
 }

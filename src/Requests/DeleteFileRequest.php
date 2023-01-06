@@ -13,7 +13,7 @@ class DeleteFileRequest extends FormRequest
      */
     public function authorize()
     {
-        return false; // TODO : check permission
+        return $this->user()->can('permission', 'files.delete');
     }
 
     /**

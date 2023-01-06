@@ -21,4 +21,9 @@ trait HasFile
         /** @var Model $this */
         return $this->morphMany(Fileable::class,' fileable');
     }
+
+    public function file(array $ids)
+    {
+        return $this->files()->sync($ids);
+    }
 }

@@ -5,9 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('api')->prefix('api/files')->name('files.')->group(function () {
 
-    Route::get('index', [FileController::class, 'index'])->name('index');
+    Route::get('/', [FileController::class, 'index'])->name('index');
     Route::post('/', [FileController::class, 'store'])->name('store');
-    Route::post('/attach', [FileController::class, 'attach'])->name('attach');
-    Route::post('/detach', [FileController::class, 'attach'])->name('detach');
-    Route::delete('/', [FileController::class, 'destroy'])->name('delete');
+    Route::delete('/', [FileController::class, 'destroy'])->name('destroy');
 });

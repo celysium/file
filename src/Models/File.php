@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property string $path
  * @property string $description
+ * @property string $mime_type
  */
 class File extends Model
 {
@@ -19,7 +20,7 @@ class File extends Model
     protected $fillable = [
         'path',
         'description',
-        'extension',
+        'mime_type',
     ];
 
     public function fileables(): HasMany
@@ -29,6 +30,6 @@ class File extends Model
 
     protected static function newFactory(): FileFactory
     {
-        return static();
+        return new FileFactory();
     }
 }
