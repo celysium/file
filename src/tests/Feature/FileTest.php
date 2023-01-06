@@ -19,7 +19,7 @@ class FileTest extends TestCase
 
         $response = $this->postJson(route('file.store'), $fileDataCreation);
 
-        $response->assertSuccessful()
+        $response->assertCreated()
             ->assertJson(fn(AssertableJson $json) => $json
                 ->hasAll('messages', 'data', 'meta')
                 ->has('data.id')
