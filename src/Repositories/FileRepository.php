@@ -42,6 +42,9 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
             ->create($parameters);
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function delete(array $parameters): bool
     {
         DB::beginTransaction();
@@ -68,7 +71,9 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
                 return true;
             } else {
                 DB::rollBack();
-                return false;
+                throw ValidationException::withMessages([
+                    'file' => [__('file::message.could_not_delete')]
+                ]);
             }
         }
 

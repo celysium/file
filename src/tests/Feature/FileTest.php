@@ -33,7 +33,7 @@ class FileTest extends TestCase
 
         $this->deleteJson(route('files.delete'), [
             'files' => [$file->id]
-        ])->assertSuccessful();
+        ])->assertOk();
 
         $this->assertDatabaseMissing('files', [
             'id' => $file->id
@@ -49,7 +49,7 @@ class FileTest extends TestCase
         $this->deleteJson(route('files.delete'), [
             'files' => $file->id,
             'is_force_delete' => true
-        ])->assertSuccessful();
+        ])->assertOk();
 
         $this->assertDatabaseMissing('files', [
             'id' => $file->id
@@ -63,7 +63,7 @@ class FileTest extends TestCase
         $files = File::factory(10)->create();
 
         $this->getJson(route('files.index'))
-            ->assertSuccessful()
+            ->assertOk()
             ->assertJsonCount(10, 'data')
             ->assertJson(fn(AssertableJson $json) => $json
                 ->hasAll('messages', 'data', 'meta')
