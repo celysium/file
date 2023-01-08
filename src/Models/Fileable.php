@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $file_id
  * @property int $fileable_id
  * @property string $fileable_type
+ * @property string $description
  * @property string $type
  * @property array $data
  */
