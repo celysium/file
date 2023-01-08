@@ -33,7 +33,7 @@ class FileController extends Controller
 
     public function destroy(DeleteFileRequest $request): JsonResponse
     {
-        $this->fileService->delete($request->validated());
+        $this->fileService->destroy($request->validated());
 
         return Responser::deleted();
     }
