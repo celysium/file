@@ -4,8 +4,8 @@ namespace Celysium\File\Controllers;
 
 use Celysium\BaseStructure\Controller\Controller;
 use Celysium\File\Repositories\FileRepositoryInterface;
-use Celysium\File\Requests\CreateFileRequest;
-use Celysium\File\Requests\DeleteFileRequest;
+use Celysium\File\Requests\File\StoreRequest;
+use Celysium\File\Requests\File\DeleteRequest;
 use Celysium\File\Resources\FileResource;
 use Celysium\Responser\Responser;
 use Illuminate\Http\JsonResponse;
@@ -24,16 +24,16 @@ class FileController extends Controller
         return Responser::collection(FileResource::collection($listedFiles));
     }
 
-    public function store(CreateFileRequest $request): JsonResponse
+    public function store(StoreRequest $request): JsonResponse
     {
         $file = $this->fileService->store($request->validated());
 
         return Responser::created(new FileResource($file));
     }
 
-    public function destroy(DeleteFileRequest $request): JsonResponse
+    public function delete(DeleteRequest $request): JsonResponse
     {
-        $this->fileService->destroy($request->validated());
+        $this->fileService->delete($request->validated());
 
         return Responser::deleted();
     }

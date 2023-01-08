@@ -1,10 +1,10 @@
 <?php
 
-namespace Celysium\File\Requests;
+namespace Celysium\File\Requests\File;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateFileRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.

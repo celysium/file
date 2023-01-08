@@ -1,10 +1,10 @@
 <?php
 
-namespace Celysium\File\Requests;
+namespace Celysium\File\Requests\File;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DeleteFileRequest extends FormRequest
+class DeleteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
