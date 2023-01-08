@@ -22,6 +22,7 @@ class Fileable extends Model
         'file_id',
         'fileable_id',
         'fileable_type',
+        'description',
         'type',
         'data',
     ];
