@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Celysium\File\Database\Factories;
 
 use Celysium\File\Models\File;
 use Illuminate\Database\Eloquent\Factories\Factory;

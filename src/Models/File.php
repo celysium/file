@@ -2,7 +2,7 @@
 
 namespace Celysium\File\Models;
 
-use database\factories\FileFactory;
+use Celysium\File\Database\Factories\FileFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
