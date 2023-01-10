@@ -3,6 +3,7 @@
 namespace Celysium\File\Repositories;
 
 use Celysium\BaseStructure\Repository\BaseRepository;
+use Celysium\File\Events\DetachFile;
 use Celysium\File\Models\File;
 use Celysium\File\Models\Fileable;
 use Illuminate\Database\Eloquent\Builder;
@@ -37,7 +38,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
             ]);
         }
 
-        return $this->file
+        return $this->model
             ->query()
             ->create($parameters);
     }
@@ -49,35 +50,43 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
     {
         DB::beginTransaction();
 
-        $paths = File::query()
-            ->whereIn('id', $parameters['files'])
-            ->get(['path'])
-            ->toArray();
-
-        Fileable::query()
+        $fileables = Fileable::query()
             ->whereIn('file_id', $parameters['files'])
-            ->delete();
+            ->distinct('fileable_id', 'fileable_type')
+            ->get();
+
+        /** @var Fileable $fileable */
+        foreach ($fileables as $fileable) {
+            if ($fileable->delete()) {
+                DetachFile::dispatch($fileable);
+            }
+            else {
+                throw ValidationException::withMessages([
+                    'files' => [__('file::message.could_not_delete')]
+                ]);
+            }
+        }
 
         if (!empty($parameters['is_force_delete'])) {
-            File::query()
+            $paths = $this->model->query()
+                ->whereIn('id', $parameters['files'])
+                ->get(['path'])
+                ->toArray();
+
+            $this->model->query()
                 ->whereIn('id', $parameters['files'])
                 ->delete();
 
             $result = Storage::delete($paths);
 
-            if ($result) {
-                DB::commit();
-                //TODO : fire job to update cache
-                return true;
-            } else {
-                DB::rollBack();
+            if (! $result) {
                 throw ValidationException::withMessages([
-                    'file' => [__('file::message.could_not_delete')]
+                    'is_force_delete' => [__('file::message.could_not_delete')]
                 ]);
             }
         }
-
         DB::commit();
+
         return true;
     }
 
