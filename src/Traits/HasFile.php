@@ -23,15 +23,15 @@ trait HasFile
     public function fileables(): MorphOne
     {
         /** @var Model $this */
-        return $this->morphOne(Fileable::class, 'fileable');
+        return $this->morphMany(Fileable::class, 'fileable');
     }
 
-    public function attachFile(int $file_id, array $data = [], ?string $type = null, ?string $description = null): Model
+    public function attachFile(int $file_id, ?string $type = null, array $data = [], ?string $description = null): Model
     {
         return $this->fileables()->create([
             'file_id' => $file_id,
-            'data' => $data,
             'type' => $type,
+            'data' => $data,
             'description' => $description,
         ]);
     }
