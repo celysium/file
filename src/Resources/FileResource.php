@@ -29,6 +29,7 @@ class FileResource extends JsonResource
             'url' => Storage::url($this->path),
             'description' => $this->description,
             'mime_type' => $this->mime_type,
+            'created_at' => $this->created_at->toDateTimeString()
         ];
     }
 }

@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('path');
             $table->string('description')->nullable();
             $table->string('mime_type');
+            $table->timestamp('created_at');
         });
     }
 
