@@ -17,8 +17,9 @@ return new class extends Migration {
             $table->foreignId('file_id')
                 ->constrained('files');
             $table->morphs('fileable');
+            $table->string('description')->nullable();
             $table->string('type')->nullable();
-            $table->json('data')->nullable();
+            $table->text('data')->nullable();
         });
     }
 

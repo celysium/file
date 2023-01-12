@@ -6,6 +6,7 @@ use Celysium\File\Models\File;
 use Celysium\File\Models\Fileable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 trait HasFile
@@ -16,9 +17,42 @@ trait HasFile
         return $this->morphToMany(File::class, 'fileable');
     }
 
-    public function fileables(): MorphMany
+    /**
+     * @return MorphOne
+     */
+    public function fileables(): MorphOne
     {
         /** @var Model $this */
-        return $this->morphMany(Fileable::class,' fileable');
+        return $this->morphMany(Fileable::class, 'fileable');
+    }
+
+    public function attachFile(int $file_id, ?string $type = null, array $data = [], ?string $description = null): Model
+    {
+        return $this->fileables()->create([
+            'file_id' => $file_id,
+            'type' => $type,
+            'data' => $data,
+            'description' => $description,
+        ]);
+    }
+
+    public function detachFile(int $file_id): bool
+    {
+        return $this->fileables()
+            ->where('file_id', $file_id)
+            ->delete();
+    }
+
+    public function syncFile(array $files): array
+    {
+        $data = [];
+        foreach ($files as $file) {
+            $data[$file['id']] = [
+                'data' => $file['data'] ?? [],
+                'type' => $file['type'] ?? null,
+                'description' => $file['description'] ?? null,
+            ];
+        }
+        return $this->files()->sync($data);
     }
 }

@@ -10,7 +10,8 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Celysium\\File\\": "src/"
+            "Celysium\\File\\": "src/",
+            "Celysium\\File\\Database\\Factories\\": "database/factories"
         }
     },
     "extra": {
@@ -33,7 +34,8 @@
     "require": {
         "php" : "^8.0",
         "laravel/framework" : "^9.0",
-        "celysium/responser": "dev-master"
+        "celysium/responser": "dev-master",
+        "celysium/base-structure": "dev-master"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
