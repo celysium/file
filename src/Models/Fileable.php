@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property string $description
  * @property string $type
  * @property array $data
+ * @property Model $model
  */
 class Fileable extends Model
 {
