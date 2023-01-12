@@ -19,6 +19,13 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
         parent::__construct($file);
     }
 
+    public function rules(): array
+    {
+        return [
+            'path' => 'bothfixLike'
+        ];
+    }
+
     /**
      * @throws ValidationException
      */
@@ -26,7 +33,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
     {
         $parameters['mime_type'] = $parameters['file']->extension();
 
-        $parameters['path'] = Storage::putFile(
+        $parameters['path'] = Storage::put(
             now()->format('Y/m/d'),
             $parameters['file'],
             'public'
@@ -52,17 +59,16 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
 
         $fileables = Fileable::query()
             ->whereIn('file_id', $parameters['files'])
-            ->distinct('fileable_id', 'fileable_type')
             ->get();
 
         /** @var Fileable $fileable */
         foreach ($fileables as $fileable) {
             if ($fileable->delete()) {
-                DetachFile::dispatch($fileable);
+                DetachFile::dispatch($fileable->model);
             }
             else {
                 throw ValidationException::withMessages([
-                    'files' => [__('file::message.could_not_delete')]
+                    'files.' . $fileable->file_id => [__('file::message.could_not_delete')]
                 ]);
             }
         }
@@ -73,13 +79,17 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
                 ->get(['path'])
                 ->toArray();
 
-            $this->model->query()
+            $deleted = $this->model->query()
                 ->whereIn('id', $parameters['files'])
                 ->delete();
 
-            $result = Storage::delete($paths);
+            if($deleted != count($paths)) {
+                throw ValidationException::withMessages([
+                    'is_force_delete' => [__('file::message.could_not_delete')]
+                ]);
+            }
 
-            if (! $result) {
+            if (! Storage::delete($paths)) {
                 throw ValidationException::withMessages([
                     'is_force_delete' => [__('file::message.could_not_delete')]
                 ]);
@@ -88,14 +98,5 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
         DB::commit();
 
         return true;
-    }
-
-    public function applyFilters(Builder $query = null, array $parameters = []): Builder
-    {
-        if (isset($parameters['path'])) {
-            $query->where('path', $parameters['path']);
-        }
-
-        return parent::applyFilters($query, $parameters);
     }
 }
