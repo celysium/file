@@ -64,7 +64,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
         /** @var Fileable $fileable */
         foreach ($fileables as $fileable) {
             if ($fileable->delete()) {
-                DetachFile::dispatch($fileable->model);
+                DetachFile::dispatch($fileable);
             }
             else {
                 throw ValidationException::withMessages([
